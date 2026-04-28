@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<title>Birthday Surprise 🎁</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+}
+
+.title{
+    position:fixed;
+    top:20px;
+    width:100%;
+    text-align:center;
+    color:white;
+    font-size:2.5rem;
+    z-index:4;
+    font-family:'Dancing Script', cursive;
+    text-shadow:0 0 10px #fff, 0 0 25px pink;
+}
+
+.slider{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:0;
+}
+
+.slide{
+    position:absolute;
+    width:100%;
+    height:100%;
+    opacity:0;
+    transition:0.8s;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.slide::before{
+    content:'';
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-image:var(--bg);
+    background-size:cover;
+    background-position:center;
+    filter:blur(8px);
+    transform:scale(1.1);
+}
+
+.slide::after{
+    content:'';
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.3);
+}
+
+.slide img{
+    position:relative;
+    max-width:85%;
+    max-height:85%;
+    object-fit:contain;
+    border-radius:15px;
+    z-index:2;
+}
+
+.slide.active{
+    opacity:1;
+}
+
+.gift-box{
+    position:fixed;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:3;
+    text-align:center;
+}
+
+.gift{
+    font-size:90px;
+    cursor:pointer;
+    position:relative;
+}
+
+@keyframes bounce{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-12px);}
+}
+
+.open-text{
+    color:white;
+    margin-top:10px;
+    font-size:20px;
+    text-shadow:0 0 10px #fff, 0 0 20px pink;
+}
+
+.message-box{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0);
+    width:90%;
+    max-width:400px;
+    background:rgba(0,0,0,0.9);
+    color:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+    z-index:5;
+    transition:0.4s;
+    box-shadow:0 0 20px white;
+}
+
+.message-box.active{
+    transform:translate(-50%,-50%) scale(1);
+}
+
+.message-box button{
+    margin-top:15px;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    color:black;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 0 10px white;
+    transition:0.3s;
+}
+
+.message-box button:hover{
+    background:pink;
+    color:white;
+    transform:scale(1.05);
+}
+
+#fireworks{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:1;
+    pointer-events:none;
+}
+
+.gift.fly{
+    position:fixed;
+    left:50%;
+    top:100%;
+    transform:translateX(-50%) rotate(0deg);
+    font-size:110px;
+    animation:flyIn 2s ease forwards;
+}
+
+@keyframes flyIn{
+    0%{
+        top:100%;
+        opacity:0;
+        transform:translateX(-50%) rotate(0deg) scale(0.5);
+    }
+    50%{
+        opacity:1;
+    }
+    100%{
+        top:45%;
+        transform:translateX(-50%) rotate(360deg) scale(1);
+        opacity:1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="title">Happy Birthday Amina 🎂💖</div>
+
+<canvas id="fireworks"></canvas>
+
+<!-- SLIDER -->
+<div class="slider">
+<div class="slide active" style="--bg:url('images/image1.jpeg')"><img src="images/image1.jpeg"></div>
+<div class="slide" style="--bg:url('images/image2.jpg')"><img src="images/image2.jpg"></div>
+<div class="slide" style="--bg:url('images/image3.jpg')"><img src="images/image3.jpg"></div>
+<div class="slide" style="--bg:url('images/image4.jpg')"><img src="images/image4.jpg"></div>
+<div class="slide" style="--bg:url('images/image5.jpg')"><img src="images/image5.jpg"></div>
+<div class="slide" style="--bg:url('images/image6.jpg')"><img src="images/image6.jpg"></div>
+<div class="slide" style="--bg:url('images/image7.jpg')"><img src="images/image7.jpg"></div>
+<div class="slide" style="--bg:url('images/image8.jpg')"><img src="images/image8.jpg"></div>
+<div class="slide" style="--bg:url('images/image9.jpg')"><img src="images/image9.jpg"></div>
+<div class="slide" style="--bg:url('images/image10.jpg')"><img src="images/image10.jpg"></div>
+<div class="slide" style="--bg:url('images/image11.jpg')"><img src="images/image11.jpg"></div>
+<div class="slide" style="--bg:url('images/image12.jpg')"><img src="images/image12.jpg"></div>
+<div class="slide" style="--bg:url('images/image13.jpg')"><img src="images/image13.jpg"></div>
+<div class="slide" style="--bg:url('images/image14.jpg')"><img src="images/image14.jpg"></div>
+</div>
+
+<!-- GIFT -->
+<div class="gift-box">
+    <div class="gift" id="gift" onclick="openGift()">🎁</div>
+    <div class="open-text">Amina, open karo 🎁💖</div>
+</div>
+
+<!-- MESSAGE -->
+<div class="message-box" id="msgBox">
+    <div id="wish">
+        🎂 Happy Birthday Amina 💖 <br><br>
+        Wish you many many returns ❤️<br>
+        Tum bohot special ho 💝<br><br>
+        Allah tumhe hamesha khush rakhe 🤲💖<br><br>
+        you are very sweet & cute 💖<br><br>
+        <button onclick="closeMsg()">Close</button>
+    </div>
+</div>
+
+<script>
+
+/* SLIDER */
+const slides = document.querySelectorAll('.slide');
+let i = 0;
+
+function show(){
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+    i = (i + 1) % slides.length;
+}
+setInterval(show,1500);
+
+/* GIFT */
+function openGift(){
+    document.getElementById('msgBox').classList.add('active');
+
+    if(document.getElementById('nextBtn')) return;
+
+    let btn = document.createElement("button");
+    btn.id = "nextBtn";
+    btn.innerText = "✨ Next Surprise";
+    btn.style.marginTop = "15px";
+    btn.style.padding = "12px 25px";
+    btn.style.border = "none";
+    btn.style.borderRadius = "10px";
+    btn.style.background = "pink";
+    btn.style.color = "white";
+    btn.style.fontWeight = "bold";
+    btn.style.cursor = "pointer";
+    btn.style.display = "block";
+    btn.style.margin = "15px auto 0";
+    btn.style.boxShadow = "0 0 10px pink";
+
+    btn.onclick = function(){
+        window.location.href = "index3.html";
+    };
+
+    document.getElementById("wish").appendChild(btn);
+}
+
+function closeMsg(){
+    document.getElementById('msgBox').classList.remove('active');
+}
+
+/* FIREWORK */
+window.onload = function(){
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+let particles = [];
+
+function createFirework(){
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height / 2;
+
+    for(let i=0;i<25;i++){
+        particles.push({
+            x:x,
+            y:y,
+            angle:Math.random()*2*Math.PI,
+            speed:Math.random()*4+2,
+            life:70
+        });
+    }
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,index)=>{
+        p.x += Math.cos(p.angle)*p.speed;
+        p.y += Math.sin(p.angle)*p.speed;
+        p.life--;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2,0,Math.PI*2);
+        ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,60%)";
+        ctx.fill();
+
+        if(p.life<=0){
+            particles.splice(index,1);
+        }
+    });
+}
+
+setInterval(createFirework,1000);
+
+function animate(){
+    draw();
+    requestAnimationFrame(animate);
+}
+animate();
+};
+
+</script>
+</body>
+</html>

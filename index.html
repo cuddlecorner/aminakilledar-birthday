@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise 🎉</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    overflow:hidden;
+    font-family:Poppins;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    background: linear-gradient(270deg,#ff0080,#7928ca,#00c6ff,#ff0080);
+    background-size: 600% 600%;
+    animation: gradientMove 12s ease infinite;
+}
+
+@keyframes gradientMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.title{
+    font-family:'Dancing Script', cursive;
+    font-size:65px;
+    color:#ff4da6;
+    text-shadow:0 0 20px #ff4da6;
+    animation: glow 2s infinite alternate;
+}
+
+.sub{
+    font-size:22px;
+    margin:10px 0;
+    color:white;
+    font-weight:300;
+}
+
+.love{
+    font-size:28px;
+    margin-top:20px;
+    color:#ffccff;
+    font-weight:bold;
+    text-shadow:0 0 10px black;
+}
+
+@keyframes glow{
+    from{ text-shadow:0 0 10px #ff4da6; }
+    to{ text-shadow:0 0 30px #ff0080,0 0 50px #fff; }
+}
+
+#login{
+    background:white;
+    color:black;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    z-index:20;
+}
+
+input{
+    padding:10px;
+    font-size:18px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    margin:10px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#ff6b6b;
+    color:white;
+}
+
+#countdownBox{
+    display:none;
+    text-align:center;
+    padding:30px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    box-shadow:0 0 30px rgba(0,0,0,0.3);
+    z-index:10;
+}
+
+#message{
+    font-family:'Dancing Script', cursive;
+    font-size:40px;
+    margin-bottom:20px;
+}
+
+#timer{
+    display:flex;
+    gap:15px;
+    justify-content:center;
+}
+
+#timer span{
+    background:rgba(0,0,0,0.4);
+    padding:15px;
+    border-radius:15px;
+    min-width:70px;
+}
+
+#timer b{ font-size:30px; display:block; }
+
+#wish{
+    display:none;
+    text-align:center;
+    position:relative;
+    z-index:15;
+    padding:20px;
+}
+
+#wish h1{
+    font-family:'Dancing Script', cursive;
+    font-size:60px;
+}
+
+canvas{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:0;
+}
+
+.heart{
+    position:absolute;
+    bottom:-20px;
+    animation: floatHeart 6s linear forwards;
+    z-index:9;
+}
+
+@keyframes floatHeart{
+    100%{ transform:translateY(-120vh); opacity:0;}
+}
+
+.balloon{
+    position:absolute;
+    bottom:-100px;
+    width:40px;
+    height:50px;
+    border-radius:50%;
+    animation: floatUp 8s linear forwards;
+    z-index:8;
+}
+
+@keyframes floatUp{
+    100%{ transform:translateY(-120vh);}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="login">
+    <h2>🔐 Enter Password</h2>
+    <input type="password" id="pass">
+    <br>
+    <button onclick="check()">Open</button>
+    <p id="error"></p>
+</div>
+
+<!-- COUNTDOWN -->
+<div id="countdownBox">
+    <h2 id="message">Amina 💖</h2>
+    <div id="timer">
+        <span><b id="days">0</b>Days</span>
+        <span><b id="hours">0</b>Hours</span>
+        <span><b id="minutes">0</b>Min</span>
+        <span><b id="seconds">0</b>Sec</span>
+    </div>
+</div>
+
+<!-- WISH -->
+<div id="wish">
+    <h1 class="title">🎉 Happy Birthday Amina 🎂</h1>
+    <p class="sub">💖 Wishing you many many returns of the day 💖</p>
+    <p class="sub">🎂 Happy Birthday 🎂</p>
+    <p class="love">❤️ Love you MERI JAAN ❤️</p>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+/* PASSWORD */
+function check(){
+    let p = document.getElementById("pass").value;
+    if(p === "ammo29"){
+        document.getElementById("login").style.display = "none";
+        document.getElementById("countdownBox").style.display = "block";
+        startCountdown();
+    } else {
+        document.getElementById("error").innerText = "Wrong Password ❌";
+    }
+}
+
+/* COUNTDOWN */
+const targetDate = new Date("April 29, 2026 00:00:00").getTime();   
+
+function startCountdown(){
+    const msg = document.getElementById("message");
+
+    const timer = setInterval(()=>{
+        let now = new Date().getTime();
+        let distance = targetDate - now;
+
+        if(distance <= 0){
+            clearInterval(timer);
+            document.getElementById("countdownBox").style.display = "none";
+            document.getElementById("wish").style.display = "block";
+
+            startFireworks();
+            startHearts();
+            startBalloons();
+
+            if(document.getElementById("nextBtn")) return;
+
+            let btn = document.createElement("button");
+            btn.id = "nextBtn";
+            btn.innerText = "Get Surprise 🎁";
+            btn.style.marginTop = "20px";
+            btn.style.padding = "12px 25px";
+            btn.style.border = "none";
+            btn.style.borderRadius = "10px";
+            btn.style.background = "white";
+            btn.style.color = "black";
+            btn.style.fontWeight = "bold";
+            btn.style.cursor = "pointer";
+            btn.style.boxShadow = "0 0 15px white";
+            btn.onclick = function(){
+                window.location.href = "index2.html";
+            };
+            document.getElementById("wish").appendChild(btn);
+            return;
+        }
+
+        let d = Math.floor(distance/(1000*60*60*24));
+        let h = Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+        let m = Math.floor((distance%(1000*60*60))/(1000*60));
+        let s = Math.floor((distance%(1000*60))/1000);
+
+        document.getElementById("days").innerText = d;
+        document.getElementById("hours").innerText = h;
+        document.getElementById("minutes").innerText = m;
+        document.getElementById("seconds").innerText = s;
+
+        if(d > 1){
+            msg.innerText = "Amina… bas thoda sa intezaar 💖";
+        }else if(h > 1){
+            msg.innerText = "Amina… bas thoda sa intezaar 💕";
+        }else if(m > 1){
+            msg.innerText = "Amina.. bas kucch minute or 😍";
+        }else{
+            msg.innerText = "Amina dekhuo kaisa khus ho rahe hai 🎉";
+        }
+
+    },1000);
+}
+
+/* FIREWORKS */
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let particles = [];
+
+function resize(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+function createFirework(){
+    let x = Math.random()*canvas.width;
+    let y = Math.random()*canvas.height/2;
+    let colors = ["#ff004c","#ffcc00","#00e5ff","#ff66ff","#00ff88"];
+    for(let i=0;i<80;i++){
+        particles.push({
+            x,y,
+            angle:Math.random()*Math.PI*2,
+            speed:Math.random()*5+2,
+            life:100,
+            color:colors[Math.floor(Math.random()*colors.length)]
+        });
+    }
+}
+
+function animate(){
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+        p.x += Math.cos(p.angle)*p.speed;
+        p.y += Math.sin(p.angle)*p.speed;
+        p.life--;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2,0,Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if(p.life<=0) particles.splice(i,1);
+    });
+    requestAnimationFrame(animate);
+}
+
+function startFireworks(){
+    setInterval(createFirework,700);
+    animate();
+}
+
+function startHearts(){
+    setInterval(()=>{
+        let h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "💖";
+        h.style.left = Math.random()*window.innerWidth+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),6000);
+    },400);
+}
+
+function startBalloons(){
+    setInterval(()=>{
+        let b = document.createElement("div");
+        b.className = "balloon";
+        b.style.left = Math.random()*window.innerWidth+"px";
+        b.style.background = `hsl(${Math.random()*360},100%,60%)`;
+        document.body.appendChild(b);
+        setTimeout(()=>b.remove(),8000);
+    },700);
+}
+
+</script>
+</body>
+</html>
